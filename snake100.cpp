@@ -412,7 +412,7 @@ void initsnake() {
   if (mode == helix ) color = ledgreen;
   if (mode == other ) color = ledwhite;
 
-  for ( int ui = 0 ; ui < nou*2 ; ui++ ) {
+  for ( int ui = 0 ; ui < JOINT_NUM ; ui++ ) {
     Dxl.goalPosition(CommandParameters[2*ui], 512);
     Dxl.ledOn(CommandParameters[2*ui], color);
     delay(30);
