@@ -399,26 +399,11 @@ void othermode() {
 
 
 void settargetang () {
-
   //目標角度設定　0-1023
   for ( int ui = 0 ; ui < nou ; ui++ ) {
-    //CommandParameters[2*ui -1] = 512 + targety[ui-1]/150.0*511; //ヨー軸
-    //CommandParameters[14+ 2*ui -1] = 512 + targetp[ui-1]/150.0*511; //ピッチ軸
-    
     CommandParameters[2*2*ui + 1] = 512 + targety[ui]/150.0*511; //ヨー軸
     CommandParameters[2*2*ui + 3] = 512 + targetp[ui]/150.0*511; //ピッチ軸
-    /*SerialUSB.print("\r\n\r\nCommandParameters[");
-    SerialUSB.print(2*2*ui + 1);
-    SerialUSB.print("] = ");
-    SerialUSB.print(CommandParameters[2*2*ui + 1]);
-     
-    SerialUSB.print("     CommandParameters[");
-    SerialUSB.print(2*2*ui + 3);
-    SerialUSB.print("] = ");
-    SerialUSB.println(CommandParameters[2*2*ui + 3]);
-    SerialUSB.print("\r\n\r\n");*/
   }
-
 }
 
 void initsnake() {
