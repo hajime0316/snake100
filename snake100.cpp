@@ -167,6 +167,7 @@ mode, premode;
  */
 
 //// ボタンのデータ格納
+int RcvData = 0;
 double up = 0, right = 0;
 int t = 0;
 
@@ -211,7 +212,6 @@ void setup() {
 
 void loop() {
   // コントローラのデータ取得
-  static int RcvData;
   if(Controller.available()) {
     RcvData = Controller.readData();
   }
