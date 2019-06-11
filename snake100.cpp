@@ -302,7 +302,7 @@ void loop() {
       Dxl.goalPosition( CommandParameters[2*ui], CommandParameters[2*ui +1]);
       Dxl.ledOn( CommandParameters[2*ui], color);
 
-      delay(30);
+      delay(3);
     }
   }
   else { // モード初期化不要の場合
