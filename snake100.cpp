@@ -468,8 +468,3 @@ void initsnake() {
   }
   Dxl.ledOn(BROADCAST_ID, color);
 }
-
-
-
-
-
