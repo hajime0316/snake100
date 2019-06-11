@@ -147,11 +147,10 @@ enum {
   helix,
   other
 }
-mode, premode;
-/*
- * premode = present mode 現在のモード
- * モード変更したい場合はmode変数を変更する
- */
+mode, present_mode;
+// modeが変更されたら，モード初期化の処理を1回だけ実行し
+// preset_modeを変更する
+
 
 //// ボタンのデータ格納
 int RcvData = 0;
@@ -191,7 +190,7 @@ void setup() {
 
   RcvData = 0;
   mode = other;
-  premode = other;
+  present_mode = other;
 
   initsnake();
   SerialUSB.print("SYSTEM INIT OK!!!\r\n");
@@ -249,8 +248,8 @@ void loop() {
   }
 
   //モード初期化
-  if ( premode != mode ){
-    premode = mode; 
+  if ( present_mode != mode ){
+    present_mode = mode; 
     up = 0;
     right = 0;
     SerialUSB.print("\r\n\r\nSnakeMode = ");
