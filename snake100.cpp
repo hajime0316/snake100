@@ -151,8 +151,7 @@ mode, present_mode;
 // modeが変更されたら，モード初期化の処理を1回だけ実行し
 // preset_modeを変更する
 
-
-//// ボタンのデータ格納
+// ボタンのデータ格納
 int RcvData = 0;
 double up = 0, right = 0;
 int t = 0;
