@@ -22,10 +22,10 @@ RC100 Controller;
 Dynamixel Dxl(DXL_BUS_SERIAL1);
 
 
-#define nou 50
-#define JOINT_NUM nou*2
-double targety[nou];//+-150[deg]
-double targetp[nou];//+-150[deg]
+#define UNIT_NUM 50
+#define JOINT_NUM UNIT_NUM*2
+double targety[UNIT_NUM];//+-150[deg]
+double targetp[UNIT_NUM];//+-150[deg]
 
 
 int CommandParameters[200]=
@@ -258,7 +258,7 @@ void loop() {
     //Dxl.writeWord( BROADCAST_ID, P_GOAL_POSITION, 512);// 初期設定　軸の位置　０度
     //initsnake();
     //delay(500);
-    for ( int i = 0; i< nou; i++){
+    for ( int i = 0; i< UNIT_NUM; i++){
       targety[i] = 0;
       targetp[i] = 0;
     }
@@ -329,7 +329,7 @@ void snakemode() {
   double phi = 1.5;
   //t = t++;
   t = up;
-  for ( int i = 0; i< nou; i++){
+  for ( int i = 0; i< UNIT_NUM; i++){
     targety[i] =  A * sin ( w * t + phi * i );
     targetp[i] = 0;
   }
@@ -344,7 +344,7 @@ void sidemode () {
   double phi = 1.8;
   //t = t++;
   t = up;
-  for ( int i = 0; i< nou; i++){
+  for ( int i = 0; i< UNIT_NUM; i++){
     targety[i] = A * sin ( w * t + phi * i );
     targetp[i] = A * sin ( w * t + phi * i - M_PI/4 );
   }
@@ -377,7 +377,7 @@ void helixmode() {
   //kap_p = -kappa*sin(psi);
   //kap_y = kappa*cos(psi);
 
-  for ( int i = 0; i< nou; i++){
+  for ( int i = 0; i< UNIT_NUM; i++){
     targety[i] = 2.0*kap*ds*cos( (double)i  * 2.0 * ds * tau + w * (double)t )*360.0/(double)(2.0*M_PI);
     targetp[i] = -2.0*kap*ds*sin( ((double)i * 2.0 ) * ds * tau + w * (double)t )*360.0/(double)(2.0*M_PI);
   }
@@ -386,7 +386,7 @@ void helixmode() {
 
 void othermode() {
 
-  for ( int i = 0; i< nou; i++){
+  for ( int i = 0; i< UNIT_NUM; i++){
     targety[i] = 0;
     targetp[i] = 0;
   }
@@ -398,7 +398,7 @@ void othermode() {
 
 void settargetang () {
   //目標角度設定　0-1023
-  for ( int ui = 0 ; ui < nou ; ui++ ) {
+  for ( int ui = 0 ; ui < UNIT_NUM ; ui++ ) {
     CommandParameters[2*2*ui + 1] = 512 + targety[ui]/150.0*511; //ヨー軸
     CommandParameters[2*2*ui + 3] = 512 + targetp[ui]/150.0*511; //ピッチ軸
   }
