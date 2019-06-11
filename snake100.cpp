@@ -166,9 +166,6 @@ mode, premode;
  * モード変更したい場合はmode変数を変更する
  */
 
-// コントローラに関する変数
-//// 受信したデータを格納
-int RcvData;
 //// ボタンのデータ格納
 double up = 0, right = 0;
 int t = 0;
@@ -213,130 +210,129 @@ void setup() {
 }
 
 void loop() {
-
-  if ( Controller.available() ) {
-
+  // コントローラのデータ取得
+  static int RcvData;
+  if(Controller.available()) {
     RcvData = Controller.readData();
-    if ( RcvData & RC100_BTN_1 ) {
-      mode = snake;
-      SerialUSB.print("buttonState = RC100_BTN_1\r\n");
-      //Dxl.ledOn(BROADCAST_ID, ledblue);
-    } 
-    else if ( RcvData & RC100_BTN_2 ) {
-      mode = side;
-      SerialUSB.print("buttonState = RC100_BTN_2\r\n");
-      //Dxl.ledOn(BROADCAST_ID, ledcyan);
-    } 
-    else if ( RcvData & RC100_BTN_3 ) {
-      mode = helix;
-      SerialUSB.print("buttonState = RC100_BTN_3\r\n");
-      //Dxl.ledOn(BROADCAST_ID, ledgreen);
+  }
+
+  if ( RcvData & RC100_BTN_1 ) {
+    mode = snake;
+    SerialUSB.print("buttonState = RC100_BTN_1\r\n");
+    //Dxl.ledOn(BROADCAST_ID, ledblue);
+  } 
+  else if ( RcvData & RC100_BTN_2 ) {
+    mode = side;
+    SerialUSB.print("buttonState = RC100_BTN_2\r\n");
+    //Dxl.ledOn(BROADCAST_ID, ledcyan);
+  } 
+  else if ( RcvData & RC100_BTN_3 ) {
+    mode = helix;
+    SerialUSB.print("buttonState = RC100_BTN_3\r\n");
+    //Dxl.ledOn(BROADCAST_ID, ledgreen);
+  }
+  else if ( RcvData & RC100_BTN_4 ) {
+    //Dxl.wheelMode(BROADCAST_ID);
+    mode = other;
+    SerialUSB.print("buttonState = RC100_BTN_4\r\n");
+    //Dxl.ledOn(BROADCAST_ID, ledyellow);
+  }
+  //delay(100);
+  unsigned char color;
+  if (mode == snake ) color = ledblue;
+  if (mode == side ) color = ledcyan;
+  if (mode == helix ) color = ledgreen;
+  if (mode == other ) color = ledwhite;
+
+  if ( RcvData & RC100_BTN_U ) {
+    SerialUSB.print("buttonState = RC100_BTN_U\r\n");
+    up += 1;
+  } 
+  else if ( RcvData & RC100_BTN_D ) { 
+    SerialUSB.print("buttonState = RC100_BTN_D\r\n");
+    up -= 1;
+  } 
+  else if ( RcvData & RC100_BTN_R ) {
+    SerialUSB.print("buttonState = RC100_BTN_R\r\n");
+    right += 1;
+  } 
+  else if ( RcvData & RC100_BTN_L ) {
+    SerialUSB.print("buttonState = RC100_BTN_L\r\n");
+    right -= 1;
+  }
+
+  //モード初期化
+  if ( premode != mode ){
+    premode = mode; 
+    up = 0;
+    right = 0;
+    SerialUSB.print("\r\n\r\nSnakeMode = ");
+    SerialUSB.println(mode);
+    SerialUSB.print("\r\n\r\n");
+    //Dxl.writeWord( BROADCAST_ID, P_GOAL_SPEED, 512);// 
+    //Dxl.writeWord( BROADCAST_ID, P_GOAL_POSITION, 512);// 初期設定　軸の位置　０度
+    //initsnake();
+    //delay(500);
+    for ( int i = 0; i< nou; i++){
+      targety[i] = 0;
+      targetp[i] = 0;
     }
-    else if ( RcvData & RC100_BTN_4 ) {
-      //Dxl.wheelMode(BROADCAST_ID);
-      mode = other;
-      SerialUSB.print("buttonState = RC100_BTN_4\r\n");
-      //Dxl.ledOn(BROADCAST_ID, ledyellow);
-    }
-    //delay(100);
-    unsigned char color;
-    if (mode == snake ) color = ledblue;
-    if (mode == side ) color = ledcyan;
-    if (mode == helix ) color = ledgreen;
-    if (mode == other ) color = ledwhite;
 
-    if ( RcvData & RC100_BTN_U ) {
-      SerialUSB.print("buttonState = RC100_BTN_U\r\n");
-      up += 1;
+    if ( mode == snake ) {
+      //SerialUSB.print("\r\nSnakeMode == snake\r\n\r\n");
+      snakemode();
     } 
-    else if ( RcvData & RC100_BTN_D ) { 
-      SerialUSB.print("buttonState = RC100_BTN_D\r\n");
-      up -= 1;
+    else if ( mode == side ) {
+      //SerialUSB.print("\r\nSnakeMode == side\r\n\r\n");
+      sidemode();
     } 
-    else if ( RcvData & RC100_BTN_R ) {
-      SerialUSB.print("buttonState = RC100_BTN_R\r\n");
-      right += 1;
-    } 
-    else if ( RcvData & RC100_BTN_L ) {
-      SerialUSB.print("buttonState = RC100_BTN_L\r\n");
-      right -= 1;
+    else if ( mode == helix ) {
+      //SerialUSB.print("\r\nSnakeMode == helix\r\n\r\n");
+      helixmode();
+    }
+    else if ( mode == other ) {
+      //SerialUSB.print("\r\nSnakeMode == other\r\n\r\n");
+      othermode();
     }
 
-    //モード初期化
-    if ( premode != mode ){
-      premode = mode; 
-      up = 0;
-      right = 0;
-      SerialUSB.print("\r\n\r\nSnakeMode = ");
-      SerialUSB.println(mode);
-      SerialUSB.print("\r\n\r\n");
-      //Dxl.writeWord( BROADCAST_ID, P_GOAL_SPEED, 512);// 
-      //Dxl.writeWord( BROADCAST_ID, P_GOAL_POSITION, 512);// 初期設定　軸の位置　０度
-      //initsnake();
-      //delay(500);
-      for ( int i = 0; i< nou; i++){
-        targety[i] = 0;
-        targetp[i] = 0;
-      }
-
-      if ( mode == snake ) {
-        //SerialUSB.print("\r\nSnakeMode == snake\r\n\r\n");
-        snakemode();
-      } 
-      else if ( mode == side ) {
-        //SerialUSB.print("\r\nSnakeMode == side\r\n\r\n");
-        sidemode();
-      } 
-      else if ( mode == helix ) {
-        //SerialUSB.print("\r\nSnakeMode == helix\r\n\r\n");
-        helixmode();
-      }
-      else if ( mode == other ) {
-        //SerialUSB.print("\r\nSnakeMode == other\r\n\r\n");
-        othermode();
-      }
-
-      settargetang();
-	    if ( Controller.available() ) {
-  
-        //だんだんうごかす      
-        for ( int ui = 0 ; ui < JOINT_NUM ; ui++ ) {
-          Dxl.goalPosition( CommandParameters[2*ui], CommandParameters[2*ui +1]);
-          Dxl.ledOn( CommandParameters[2*ui], color);
-
-          delay(30);
-        }
-      }
-    }
-    else { // モード初期化不要の場合
-      if ( mode == snake ) {
-        snakemode();
-      } 
-      else if ( mode == side ) {
-        sidemode();
-      } 
-      else if ( mode == helix ) {
-        helixmode();
-      }
-      else if ( mode == other ) {
-        othermode();
-      }
-
-      settargetang();
-
-      //いっきにうごかす
-      //byte syncWrite(byte start_addr, byte num_of_data, int *param, int array_length); 
-      /********************************************************************************************************************************************************************************************/
-      // for(int i = 0; i < 30; i++) {
+    settargetang();
     
-      // Dxl.syncWrite( P_GOAL_POSITION, 1, CommandParameters,200);
+    //だんだんうごかす      
+    for ( int ui = 0 ; ui < JOINT_NUM ; ui++ ) {
+      Dxl.goalPosition( CommandParameters[2*ui], CommandParameters[2*ui +1]);
+      Dxl.ledOn( CommandParameters[2*ui], color);
 
-      //だんだんうごかす      
-      for ( int ui = 0 ; ui < JOINT_NUM ; ui++ ) {
-        Dxl.goalPosition( CommandParameters[2*ui], CommandParameters[2*ui +1]);
-        //Dxl.ledOn( CommandParameters[2*ui], color);
-        delay(3);
-      }
+      delay(30);
+    }
+  }
+  else { // モード初期化不要の場合
+    if ( mode == snake ) {
+      snakemode();
+    } 
+    else if ( mode == side ) {
+      sidemode();
+    } 
+    else if ( mode == helix ) {
+      helixmode();
+    }
+    else if ( mode == other ) {
+      othermode();
+    }
+
+    settargetang();
+
+    //いっきにうごかす
+    //byte syncWrite(byte start_addr, byte num_of_data, int *param, int array_length); 
+    /********************************************************************************************************************************************************************************************/
+    // for(int i = 0; i < 30; i++) {
+  
+    // Dxl.syncWrite( P_GOAL_POSITION, 1, CommandParameters,200);
+
+    //だんだんうごかす      
+    for ( int ui = 0 ; ui < JOINT_NUM ; ui++ ) {
+      Dxl.goalPosition( CommandParameters[2*ui], CommandParameters[2*ui +1]);
+      //Dxl.ledOn( CommandParameters[2*ui], color);
+      delay(3);
     }
   }
 }
