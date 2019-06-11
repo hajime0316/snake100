@@ -417,5 +417,4 @@ void initsnake() {
     Dxl.ledOn(CommandParameters[2*ui], color);
     delay(30);
   }
-  Dxl.ledOn(BROADCAST_ID, color);
 }
