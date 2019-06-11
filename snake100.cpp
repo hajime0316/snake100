@@ -23,7 +23,7 @@ Dynamixel Dxl(DXL_BUS_SERIAL1);
 
 
 #define UNIT_NUM 50
-#define JOINT_NUM UNIT_NUM*2
+#define JOINT_NUM (UNIT_NUM * 2)
 double targety[UNIT_NUM];//+-150[deg]
 double targetp[UNIT_NUM];//+-150[deg]
 
