@@ -422,35 +422,16 @@ void settargetang () {
 }
 
 void initsnake() {
-
   unsigned char color;
 
   if (mode == snake ) color = ledblue;
   if (mode == side ) color = ledcyan;
   if (mode == helix ) color = ledgreen;
   if (mode == other ) color = ledwhite;
-//    for ( int ui = 0 ; ui < nou ; ui++ ) {
-//    CommandParameters[2*2*ui + 1] = 512; //ヨー軸
-//    CommandParameters[2*2*ui + 3] = 512; //ピッチ軸
-//  }
-//       if ( Controller.available() ) {
-//    Dxl.syncWrite( P_GOAL_POSITION, 1, CommandParameters,100);
-//    } 
-//     if ( Controller.available() ) {
-//    Dxl.syncWrite( P_GOAL_POSITION, 1, &CommandParameters[100],100);
-//    } 
-    
+
   for ( int ui = 0 ; ui < nou*2 ; ui++ ) {
     Dxl.goalPosition(CommandParameters[2*ui], 512);
-   // Dxl.goalPosition(CommandParameters[2*ui]+100,  512);
-
     Dxl.ledOn(CommandParameters[2*ui], color);
-    //Dxl.ledOn(CommandParameters[2*ui]+100, color);
-//          SerialUSB.print("\r\n\r\nCommandParameters[2*ui] = ");
-//      SerialUSB.println(CommandParameters[2*ui]);
-//      SerialUSB.print("\r\n\r\n");
-    //Dxl.ledOn(ui+100, color);
-    //      //delay(dtms/nou);
     delay(30);
   }
   Dxl.ledOn(BROADCAST_ID, color);
