@@ -169,16 +169,11 @@ void setup() {
   delay(500);
   Dxl.ledOff(BROADCAST_ID);
 
-  //  Dxl.writeByte( BROADCAST_ID, LimitTemperature, 50); //初期設定　温度リミット
-  //  delay(100);
-  Dxl.writeWord( BROADCAST_ID, P_GOAL_SPEED, 512);// 
-  Dxl.writeWord( BROADCAST_ID, P_GOAL_POSITION, 512);// 初期設定　軸の位置　０度
-  delay(100);
-  //  Dxl.writeWord( BROADCAST_ID, P_GOAL_SPEED, 0 );//初期設定　最高速度
-  //  delay(100);
-
-  //Dxl.jointMode(ID_NUM); //jointMode() is to use position mode
-  Dxl.jointMode(BROADCAST_ID); //jointMode() is to use position mode
+  for(int i = 0; i < JOINT_NUM; i++) {
+    Dxl.goalSpeed(CommandParameters[2*i], 512);
+    Dxl.goalPosition(CommandParameters[2*i], 512);
+    Dxl.jointMode(BROADCAST_ID); //jointMode() is to use position mode
+  }
   //delay(100);
 
   Controller.begin(1);
