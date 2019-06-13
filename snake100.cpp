@@ -170,9 +170,11 @@ void setup() {
   Dxl.ledOff(BROADCAST_ID);
 
   for(int i = 0; i < JOINT_NUM; i++) {
-    Dxl.goalSpeed(CommandParameters[2*i], 512);
+    Dxl.jointMode(CommandParameters[2*i]);
+    Dxl.maxTorque(CommandParameters[2*i],1023);
     Dxl.goalPosition(CommandParameters[2*i], 512);
-    Dxl.jointMode(BROADCAST_ID); //jointMode() is to use position mode
+    Dxl.goalSpeed(CommandParameters[2*i], 512);
+    Dxl.goalTorque(CommandParameters[2*i], 1023);
   }
   //delay(100);
 
