@@ -164,6 +164,9 @@ void setup() {
 
   Dxl.begin(3);
 
+  delay(500);   // このdelayがないと，100以上のIDを持つDxl
+                // が動かない！
+
   // 一旦接続されている全てのDxlを点灯->全て消灯
   Dxl.ledOn(BROADCAST_ID, ledwhite);
   delay(500);
