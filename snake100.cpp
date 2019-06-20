@@ -326,8 +326,8 @@ void snakemode() {
   //t = t++;
   t = up;
   for ( int i = 0; i< UNIT_NUM; i++){
-    targety[i] =  A * sin ( w * t + phi * i );
     targetp[i] = 0;
+    targety[i] =  A * sin ( w * t + phi * i );
   }
 
 }
@@ -395,8 +395,8 @@ void othermode() {
 void settargetang () {
   //目標角度設定　0-1023
   for ( int ui = 0 ; ui < UNIT_NUM ; ui++ ) {
-    CommandParameters[2*2*ui + 1] = 512 + targety[ui]/150.0*511; //ヨー軸
-    CommandParameters[2*2*ui + 3] = 512 + targetp[ui]/150.0*511; //ピッチ軸
+    CommandParameters[2*2*ui + 1] = 512 + targetp[ui]/150.0*511; //ピッチ軸
+    CommandParameters[2*2*ui + 3] = 512 + targety[ui]/150.0*511; //ヨー軸
   }
 }
 
