@@ -164,26 +164,20 @@ void setup() {
 
   Dxl.begin(3);
 
-  //  Dxl.writeByte( BROADCAST_ID, LimitTemperature, 50); //初期設定　温度リミット
-  //  delay(100);
-  Dxl.writeWord( BROADCAST_ID, P_GOAL_SPEED, 512);// 
-  Dxl.writeWord( BROADCAST_ID, P_GOAL_POSITION, 512);// 初期設定　軸の位置　０度
-  delay(100);
-  //  Dxl.writeWord( BROADCAST_ID, P_GOAL_SPEED, 0 );//初期設定　最高速度
-  //  delay(100);
+  delay(500);   // このdelayがないと，100以上のIDを持つDxl
+                // が動かない！
 
-  int count = 0;
-  for(count = 0; count<=7;count++){
-    //Dxl.ledOn(ID_NUM, count);// XL-320 only movement XL-320 it has RGB LED 
-    Dxl.ledOn(BROADCAST_ID, count);// XL-320 only movement XL-320 it has RGB LED 
-    delay(100);
-    //Dxl.ledOff(ID_NUM);//All Dynamixel LED off
-    Dxl.ledOff(BROADCAST_ID);//All Dynamixel LED off
-    delay(100);
+  // 一旦接続されている全てのDxlを点灯->全て消灯
+  Dxl.ledOn(BROADCAST_ID, ledwhite);
+  delay(500);
+  Dxl.ledOff(BROADCAST_ID);
+
+  for(int i = 0; i < JOINT_NUM; i++) {
+    Dxl.jointMode(CommandParameters[2*i]);
+    Dxl.maxTorque(CommandParameters[2*i],1023);
+    Dxl.goalSpeed(CommandParameters[2*i], 512);
+    Dxl.goalTorque(CommandParameters[2*i], 1023);
   }
-
-  //Dxl.jointMode(ID_NUM); //jointMode() is to use position mode
-  Dxl.jointMode(BROADCAST_ID); //jointMode() is to use position mode
   //delay(100);
 
   Controller.begin(1);
