@@ -21,9 +21,9 @@
 RC100 Controller;
 Dynamixel Dxl(DXL_BUS_SERIAL1);
 
-// ƒT[ƒ{ƒ‚[ƒ^‚ÌŒÂ”‚ÉŠÖ‚·‚é’è‹`
-#define UNIT_NUM 50               // ƒT[ƒ{ƒ‚[ƒ^2ŒÂ‚Å1ƒ†ƒjƒbƒgD
-#define JOINT_NUM (UNIT_NUM * 2)  // 100ŒÂƒT[ƒ{ƒ‚[ƒ^‚ğ‚Â‚È‚¢‚¾‚Æ‚«C
+// ã‚µãƒ¼ãƒœãƒ¢ãƒ¼ã‚¿ã®å€‹æ•°ã«é–¢ã™ã‚‹å®šç¾©
+#define UNIT_NUM 50               // ã‚µãƒ¼ãƒœãƒ¢ãƒ¼ã‚¿2å€‹ã§1ãƒ¦ãƒ‹ãƒƒãƒˆï¼
+#define JOINT_NUM (UNIT_NUM * 2)  // 100å€‹ã‚µãƒ¼ãƒœãƒ¢ãƒ¼ã‚¿ã‚’ã¤ãªã„ã ã¨ãï¼Œ
                                   // UNIT_NUM 50, JOINT_NUM 100
 
 double targety[UNIT_NUM];//+-150[deg]
@@ -150,24 +150,24 @@ enum {
   other
 }
 mode, present_mode;
-// mode‚ª•ÏX‚³‚ê‚½‚çCƒ‚[ƒh‰Šú‰»‚Ìˆ—‚ğ1‰ñ‚¾‚¯Às‚µ
-// preset_mode‚ğ•ÏX‚·‚é
+// modeãŒå¤‰æ›´ã•ã‚ŒãŸã‚‰ï¼Œãƒ¢ãƒ¼ãƒ‰åˆæœŸåŒ–ã®å‡¦ç†ã‚’1å›ã ã‘å®Ÿè¡Œã—
+// preset_modeã‚’å¤‰æ›´ã™ã‚‹
 
-// ƒ{ƒ^ƒ“‚Ìƒf[ƒ^Ši”[
+// ãƒœã‚¿ãƒ³ã®ãƒ‡ãƒ¼ã‚¿æ ¼ç´
 int RcvData = 0;
 double up = 0, right = 0;
 int t = 0;
 
 void setup() {
-  //XL-320‚Ì‰Šú‰»‚ğ‚¿‚å‚Á‚Æ‘Ò‚Â
+  //XL-320ã®åˆæœŸåŒ–ã‚’ã¡ã‚‡ã£ã¨å¾…ã¤
   delay(1000);
 
   Dxl.begin(3);
 
-  delay(500);   // ‚±‚Ìdelay‚ª‚È‚¢‚ÆC100ˆÈã‚ÌID‚ğ‚ÂDxl
-                // ‚ª“®‚©‚È‚¢I
+  delay(500);   // ã“ã®delayãŒãªã„ã¨ï¼Œ100ä»¥ä¸Šã®IDã‚’æŒã¤Dxl
+                // ãŒå‹•ã‹ãªã„ï¼
 
-  // ˆê’UÚ‘±‚³‚ê‚Ä‚¢‚é‘S‚Ä‚ÌDxl‚ğ“_“”->‘S‚ÄÁ“”
+  // ä¸€æ—¦æ¥ç¶šã•ã‚Œã¦ã„ã‚‹å…¨ã¦ã®Dxlã‚’ç‚¹ç¯->å…¨ã¦æ¶ˆç¯
   Dxl.ledOn(BROADCAST_ID, ledwhite);
   delay(500);
   Dxl.ledOff(BROADCAST_ID);
@@ -192,7 +192,7 @@ void setup() {
 }
 
 void loop() {
-  // ƒRƒ“ƒgƒ[ƒ‰‚Ìƒf[ƒ^æ“¾
+  // ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ã®ãƒ‡ãƒ¼ã‚¿å–å¾—
   if(Controller.available()) {
     RcvData = Controller.readData();
   }
@@ -242,7 +242,7 @@ void loop() {
     right -= 1;
   }
 
-  //ƒ‚[ƒh‰Šú‰»
+  //ãƒ¢ãƒ¼ãƒ‰åˆæœŸåŒ–
   if ( present_mode != mode ){
     present_mode = mode; 
     up = 0;
@@ -251,7 +251,7 @@ void loop() {
     SerialUSB.println(mode);
     SerialUSB.print("\r\n\r\n");
     //Dxl.writeWord( BROADCAST_ID, P_GOAL_SPEED, 512);// 
-    //Dxl.writeWord( BROADCAST_ID, P_GOAL_POSITION, 512);// ‰Šúİ’è@²‚ÌˆÊ’u@‚O“x
+    //Dxl.writeWord( BROADCAST_ID, P_GOAL_POSITION, 512);// åˆæœŸè¨­å®šã€€è»¸ã®ä½ç½®ã€€ï¼åº¦
     //initsnake();
     //delay(500);
     for ( int i = 0; i< UNIT_NUM; i++){
@@ -278,7 +278,7 @@ void loop() {
 
     settargetang();
     
-    //‚¾‚ñ‚¾‚ñ‚¤‚²‚©‚·      
+    //ã ã‚“ã ã‚“ã†ã”ã‹ã™      
     for ( int ui = 0 ; ui < JOINT_NUM ; ui++ ) {
       Dxl.goalPosition( CommandParameters[2*ui], CommandParameters[2*ui +1]);
       Dxl.ledOn( CommandParameters[2*ui], color);
@@ -286,7 +286,7 @@ void loop() {
       delay(30);
     }
   }
-  else { // ƒ‚[ƒh‰Šú‰»•s—v‚Ìê‡
+  else { // ãƒ¢ãƒ¼ãƒ‰åˆæœŸåŒ–ä¸è¦ã®å ´åˆ
     if ( mode == snake ) {
       snakemode();
     } 
@@ -302,14 +302,14 @@ void loop() {
 
     settargetang();
 
-    //‚¢‚Á‚«‚É‚¤‚²‚©‚·
+    //ã„ã£ãã«ã†ã”ã‹ã™
     //byte syncWrite(byte start_addr, byte num_of_data, int *param, int array_length); 
     /********************************************************************************************************************************************************************************************/
     // for(int i = 0; i < 30; i++) {
   
     // Dxl.syncWrite( P_GOAL_POSITION, 1, CommandParameters,200);
 
-    //‚¾‚ñ‚¾‚ñ‚¤‚²‚©‚·      
+    //ã ã‚“ã ã‚“ã†ã”ã‹ã™      
     for ( int ui = 0 ; ui < JOINT_NUM ; ui++ ) {
       Dxl.goalPosition( CommandParameters[2*ui], CommandParameters[2*ui +1]);
       //Dxl.ledOn( CommandParameters[2*ui], color);
@@ -387,16 +387,16 @@ void othermode() {
     targetp[i] = 0;
   }
   //Dxl.writeWord( BROADCAST_ID, P_GOAL_SPEED, 512);// 
-  //Dxl.writeWord( BROADCAST_ID, P_GOAL_POSITION, 512);// ‰Šúİ’è@²‚ÌˆÊ’u@‚O“x
+  //Dxl.writeWord( BROADCAST_ID, P_GOAL_POSITION, 512);// åˆæœŸè¨­å®šã€€è»¸ã®ä½ç½®ã€€ï¼åº¦
 
 }
 
 
 void settargetang () {
-  //–Ú•WŠp“xİ’è@0-1023
+  //ç›®æ¨™è§’åº¦è¨­å®šã€€0-1023
   for ( int ui = 0 ; ui < UNIT_NUM ; ui++ ) {
-    CommandParameters[2*2*ui + 1] = 512 + targetp[ui]/150.0*511; //ƒsƒbƒ`²
-    CommandParameters[2*2*ui + 3] = 512 + targety[ui]/150.0*511; //ƒˆ[²
+    CommandParameters[2*2*ui + 1] = 512 + targetp[ui]/150.0*511; //ãƒ”ãƒƒãƒè»¸
+    CommandParameters[2*2*ui + 3] = 512 + targety[ui]/150.0*511; //ãƒ¨ãƒ¼è»¸
   }
 }
 
