@@ -1,4 +1,5 @@
 #include <RC100.h>
+#include "snake_parameter.h"
 
 #define DXL_BUS_SERIAL1 1  //Dynamixel on Serial1(USART1)  <-OpenCM9.04
 #define DXL_BUS_SERIAL2 2  //Dynamixel on Serial2(USART2)  <-LN101,BT210
