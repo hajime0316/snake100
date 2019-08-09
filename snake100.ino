@@ -212,11 +212,6 @@ void setup() {
 }
 
 void loop() {
-  // コントローラのデータ取得
-  if(Controller.available()) {
-    RcvData = Controller.readData();
-  }
-
   if ( RcvData & RC100_BTN_1 ) {
     mode = snake;
     SerialUSB.print("buttonState = RC100_BTN_1\r\n");
@@ -432,5 +427,12 @@ void initsnake() {
     Dxl.goalPosition(CommandParameters[2*ui], 512);
     Dxl.ledOn(CommandParameters[2*ui], color);
     delay(30);
+  }
+}
+
+void timer1_interrupt_handler() {
+  // コントローラのデータ取得
+  if(Controller.available()) {
+    RcvData = Controller.readData();
   }
 }
