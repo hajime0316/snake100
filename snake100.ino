@@ -26,6 +26,8 @@ Dynamixel Dxl(DXL_BUS_SERIAL1);
 #define JOINT_NUM (UNIT_NUM * 2)  // 100個サーボモータをつないだとき，
                                   // UNIT_NUM 50, JOINT_NUM 100
 
+void timer1_interrupt_handler();
+
 double targety[UNIT_NUM];//+-150[deg]
 double targetp[UNIT_NUM];//+-150[deg]
 
@@ -189,6 +191,22 @@ void setup() {
 
   initsnake();
   SerialUSB.print("SYSTEM INIT OK!!!\r\n");
+
+  // タイマ1設定
+  //// channeは1を使う
+  const int channel = 1;
+  //// タイマ停止
+  Timer1.pause();
+  //// 周期設定
+  Timer1.setPeriod(PERIOD);
+  //// コンペアチャンネルの設定
+  Timer1.setCompare(channel, Timer1.getOverflow());
+  //// 割り込み関数設定
+  Timer1.attachInterrupt(channel, timer1_interrupt_handler);
+  //// タイマのリフレッシュ(設定の適応)
+  Timer1.refresh();
+  //// タイマ再開
+  Timer1.resume();
 }
 
 void loop() {
