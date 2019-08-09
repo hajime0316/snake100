@@ -18,6 +18,8 @@
 #define ledyellow ( ledred|ledgreen )
 #define ledwhite ( ledred|ledgreen|ledblue )
 
+#define TIMER1_PERIOD ((uint32)10000) // microsec
+
 RC100 Controller;
 Dynamixel Dxl(DXL_BUS_SERIAL1);
 
@@ -198,7 +200,7 @@ void setup() {
   //// タイマ停止
   Timer1.pause();
   //// 周期設定
-  Timer1.setPeriod(PERIOD);
+  Timer1.setPeriod(TIMER1_PERIOD);
   //// コンペアチャンネルの設定
   Timer1.setCompare(channel, Timer1.getOverflow());
   //// 割り込み関数設定
