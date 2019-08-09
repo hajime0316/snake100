@@ -18,6 +18,8 @@
 #define ledyellow ( ledred|ledgreen )
 #define ledwhite ( ledred|ledgreen|ledblue )
 
+#define TIMER1_PERIOD ((uint32)10000) // microsec
+
 RC100 Controller;
 Dynamixel Dxl(DXL_BUS_SERIAL1);
 
@@ -25,6 +27,8 @@ Dynamixel Dxl(DXL_BUS_SERIAL1);
 #define UNIT_NUM 50               // サーボモータ2個で1ユニット．
 #define JOINT_NUM (UNIT_NUM * 2)  // 100個サーボモータをつないだとき，
                                   // UNIT_NUM 50, JOINT_NUM 100
+
+void timer1_interrupt_handler();
 
 double targety[UNIT_NUM];//+-150[deg]
 double targetp[UNIT_NUM];//+-150[deg]
@@ -189,14 +193,25 @@ void setup() {
 
   initsnake();
   SerialUSB.print("SYSTEM INIT OK!!!\r\n");
+
+  // タイマ1設定
+  //// channeは1を使う
+  const int channel = 1;
+  //// タイマ停止
+  Timer1.pause();
+  //// 周期設定
+  Timer1.setPeriod(TIMER1_PERIOD);
+  //// コンペアチャンネルの設定
+  Timer1.setCompare(channel, Timer1.getOverflow());
+  //// 割り込み関数設定
+  Timer1.attachInterrupt(channel, timer1_interrupt_handler);
+  //// タイマのリフレッシュ(設定の適応)
+  Timer1.refresh();
+  //// タイマ再開
+  Timer1.resume();
 }
 
 void loop() {
-  // コントローラのデータ取得
-  if(Controller.available()) {
-    RcvData = Controller.readData();
-  }
-
   if ( RcvData & RC100_BTN_1 ) {
     mode = snake;
     SerialUSB.print("buttonState = RC100_BTN_1\r\n");
@@ -412,5 +427,12 @@ void initsnake() {
     Dxl.goalPosition(CommandParameters[2*ui], 512);
     Dxl.ledOn(CommandParameters[2*ui], color);
     delay(30);
+  }
+}
+
+void timer1_interrupt_handler() {
+  // コントローラのデータ取得
+  if(Controller.available()) {
+    RcvData = Controller.readData();
   }
 }
