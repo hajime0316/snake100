@@ -178,9 +178,9 @@ void setup() {
 
   for(int i = 0; i < JOINT_NUM; i++) {
     Dxl.jointMode(CommandParameters[2*i]);
-    Dxl.maxTorque(CommandParameters[2*i],1023);
+    Dxl.maxTorque(CommandParameters[2*i],512);
     Dxl.goalSpeed(CommandParameters[2*i], 512);
-    Dxl.goalTorque(CommandParameters[2*i], 1023);
+    Dxl.goalTorque(CommandParameters[2*i], 512);
   }
   //delay(100);
 
