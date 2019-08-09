@@ -181,6 +181,7 @@ void setup() {
     Dxl.maxTorque(CommandParameters[2*i],512);
     Dxl.goalSpeed(CommandParameters[2*i], 512);
     Dxl.goalTorque(CommandParameters[2*i], 512);
+    Dxl.alarmShutdown(CommandParameters[2*i], 2);
   }
   //delay(100);
 
