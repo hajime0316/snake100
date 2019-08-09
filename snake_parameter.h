@@ -4,8 +4,11 @@
 #define JOINT_NUM_PAR_MODULE 10
 #define JOINT_NUM (MODULE_NUM * JOINT_NUM_PAR_MODULE)   // 必ず偶数にする
 #define UNIT_NUM (JOINT_NUM / 2)
+#define CM_JOINT_INDEX(i) (i * 2)
+#define CM_PITCH_INDEX(i) (i * 4)
+#define CM_YAW_INDEX(i) (i * 4 + 2)
 
-int CommandParameters[MODULE_NUM][JOINT_NUM * 2]=
+int CommandParameters[MODULE_NUM][JOINT_NUM_PAR_MODULE * 2]=
 {
   {
     1,   0,
