@@ -214,23 +214,19 @@ void setup() {
 void loop() {
   if ( RcvData & RC100_BTN_1 ) {
     mode = snake;
-    SerialUSB.print("buttonState = RC100_BTN_1\r\n");
     //Dxl.ledOn(BROADCAST_ID, ledblue);
   } 
   else if ( RcvData & RC100_BTN_2 ) {
     mode = side;
-    SerialUSB.print("buttonState = RC100_BTN_2\r\n");
     //Dxl.ledOn(BROADCAST_ID, ledcyan);
   } 
   else if ( RcvData & RC100_BTN_3 ) {
     mode = helix;
-    SerialUSB.print("buttonState = RC100_BTN_3\r\n");
     //Dxl.ledOn(BROADCAST_ID, ledgreen);
   }
   else if ( RcvData & RC100_BTN_4 ) {
     //Dxl.wheelMode(BROADCAST_ID);
     mode = other;
-    SerialUSB.print("buttonState = RC100_BTN_4\r\n");
     //Dxl.ledOn(BROADCAST_ID, ledyellow);
   }
   //delay(100);
@@ -241,19 +237,15 @@ void loop() {
   if (mode == other ) color = ledwhite;
 
   if ( RcvData & RC100_BTN_U ) {
-    SerialUSB.print("buttonState = RC100_BTN_U\r\n");
     up += 1;
   } 
   else if ( RcvData & RC100_BTN_D ) { 
-    SerialUSB.print("buttonState = RC100_BTN_D\r\n");
     up -= 1;
   } 
   else if ( RcvData & RC100_BTN_R ) {
-    SerialUSB.print("buttonState = RC100_BTN_R\r\n");
     right += 1;
   } 
   else if ( RcvData & RC100_BTN_L ) {
-    SerialUSB.print("buttonState = RC100_BTN_L\r\n");
     right -= 1;
   }
 
@@ -262,9 +254,6 @@ void loop() {
     present_mode = mode; 
     up = 0;
     right = 0;
-    SerialUSB.print("\r\n\r\nSnakeMode = ");
-    SerialUSB.println(mode);
-    SerialUSB.print("\r\n\r\n");
     //Dxl.writeWord( BROADCAST_ID, P_GOAL_SPEED, 512);// 
     //Dxl.writeWord( BROADCAST_ID, P_GOAL_POSITION, 512);// 初期設定　軸の位置　０度
     //initsnake();
@@ -275,19 +264,15 @@ void loop() {
     }
 
     if ( mode == snake ) {
-      //SerialUSB.print("\r\nSnakeMode == snake\r\n\r\n");
       snakemode();
     } 
     else if ( mode == side ) {
-      //SerialUSB.print("\r\nSnakeMode == side\r\n\r\n");
       sidemode();
     } 
     else if ( mode == helix ) {
-      //SerialUSB.print("\r\nSnakeMode == helix\r\n\r\n");
       helixmode();
     }
     else if ( mode == other ) {
-      //SerialUSB.print("\r\nSnakeMode == other\r\n\r\n");
       othermode();
     }
 
