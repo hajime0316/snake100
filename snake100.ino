@@ -24,7 +24,7 @@ RC100 Controller;
 Dynamixel Dxl(DXL_BUS_SERIAL1);
 
 // サーボモータの個数に関する定義
-#define UNIT_NUM 50               // サーボモータ2個で1ユニット．
+#define UNIT_NUM 30               // サーボモータ2個で1ユニット．
 #define JOINT_NUM (UNIT_NUM * 2)  // 100個サーボモータをつないだとき，
                                   // UNIT_NUM 50, JOINT_NUM 100
 
