@@ -168,7 +168,7 @@ void setup() {
 
   Dxl.begin(3);
 
-  delay(1000);   // このdelayがないと，100以上のIDを持つDxl
+  delay(2000);   // このdelayがないと，100以上のIDを持つDxl
                 // が動かない！
 
   // 一旦接続されている全てのDxlを点灯->全て消灯
@@ -176,13 +176,13 @@ void setup() {
   //delay(500);
   //Dxl.ledOff(BROADCAST_ID);
 
-  for(int i = 0; i < JOINT_NUM; i++) {
-    Dxl.jointMode(CommandParameters[2*i]);
-    Dxl.maxTorque(CommandParameters[2*i],512);
-    Dxl.goalSpeed(CommandParameters[2*i], 512);
-    Dxl.goalTorque(CommandParameters[2*i], 512);
-    Dxl.alarmShutdown(CommandParameters[2*i], 2);
-  }
+  // for(int i = 0; i < JOINT_NUM; i++) {
+  //   Dxl.jointMode(CommandParameters[2*i]);
+  //   Dxl.maxTorque(CommandParameters[2*i],512);
+  //   Dxl.goalSpeed(CommandParameters[2*i], 512);
+  //   Dxl.goalTorque(CommandParameters[2*i], 512);
+  //   Dxl.alarmShutdown(CommandParameters[2*i], 2);
+  // }
   //delay(100);
 
   Controller.begin(1);
