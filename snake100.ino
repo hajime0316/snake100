@@ -30,9 +30,8 @@ Dynamixel Dxl(DXL_BUS_SERIAL1);
 
 void timer1_interrupt_handler();
 
-double targety[UNIT_NUM];//+-150[deg]
-double targetp[UNIT_NUM];//+-150[deg]
-
+double target_joint_angles[JOINT_NUM];
+bool odd_joint_is_yaw = false;
 
 int CommandParameters[200]=
 {
