@@ -171,11 +171,6 @@ void setup() {
   delay(500);   // このdelayがないと，100以上のIDを持つDxl
                 // が動かない！
 
-  // 一旦接続されている全てのDxlを点灯->全て消灯
-  //Dxl.ledOn(BROADCAST_ID, ledwhite);
-  //delay(500);
-  //Dxl.ledOff(BROADCAST_ID);
-
   for(int i = 0; i < JOINT_NUM; i++) {
     Dxl.jointMode(CommandParameters[2*i]);
     Dxl.maxTorque(CommandParameters[2*i],512);
