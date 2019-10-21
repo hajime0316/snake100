@@ -21,6 +21,8 @@
 #define TIMER1_PERIOD ((uint32)10000) // microsec
 
 #define IS_YAW(i) (!(i%2)==odd_joint_is_yaw)
+#define GOAL_POSITION_PARAM_ZERO 512
+#define GOAL_POSITION_PARAM_PAR_ONE_RADIAN (512 / ((5.0/6.0)*PI))
 
 RC100 Controller;
 Dynamixel Dxl(DXL_BUS_SERIAL1);
@@ -395,9 +397,9 @@ void othermode() {
 
 void settargetang () {
   //目標角度設定　0-1023
-  for ( int ui = 0 ; ui < UNIT_NUM ; ui++ ) {
-    // CommandParameters[2*2*ui + 1] = 512 + targetp[ui]/150.0*511; //ピッチ軸
-    // CommandParameters[2*2*ui + 3] = 512 + targety[ui]/150.0*511; //ヨー軸
+  for (int i = 0; i < JOINT_NUM; i++) {
+    CommandParameters[2 * JOINT_NUM + 1] =
+      GOAL_POSITION_PARAM_ZERO - target_joint_angles[i] * GOAL_POSITION_PARAM_PAR_ONE_RADIAN; //ピッチ軸
   }
 }
 
