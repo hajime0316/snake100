@@ -321,13 +321,17 @@ void snakemode() {
   double A = 60; 
   double w = 0.1;
   double phi = 1.5;
-  //t = t++;
-  t = up;
-  for ( int i = 0; i< UNIT_NUM; i++){
-    // targetp[i] = 0;
-    // targety[i] =  A * sin ( w * t + phi * i );
-  }
 
+  t = up;
+
+  for ( int i = 0; i< JOINT_NUM; i++){
+    if(IS_YAW(i)) {
+      target_joint_angles[i] = A * sin(w * t + phi * i);
+    }
+    else {
+      target_joint_angles[i] = 0;
+    }
+  }
 }
 
 
