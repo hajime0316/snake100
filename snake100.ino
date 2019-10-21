@@ -20,6 +20,8 @@
 
 #define TIMER1_PERIOD ((uint32)10000) // microsec
 
+#define IS_YAW(i) (!(i%2)==odd_joint_is_yaw)
+
 RC100 Controller;
 Dynamixel Dxl(DXL_BUS_SERIAL1);
 
