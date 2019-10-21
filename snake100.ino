@@ -394,6 +394,27 @@ void othermode() {
 
 
 void pedalmode() {
+ 
+ double l_p=0.1;
+ double l_y=0.1;
+ double alpha_p=M_PI/6;
+ double alpha_y=M_PI/6;
+ double T=1.0;
+ double v=0.3;
+ double phi=1.5;
+ 
+ t=up;
+
+// kappa_y=(2*M_PI/l_)*alpha_*sin(2*M_PI*(s-v*t)/l_);
+ //kappa_p = (2*M_PI/l_p_)*alpha_p_*sin(2*M_PI*(s/l_p_ + t/t_p_));
+ for ( int i = 0; i< JOINT_NUM; i++){
+
+   if(IS_Y){
+    target_joint_angles[i]=(2*M_PI/l_y)*alpha_y*sin(2*M_PI*(i*phi-v*t)/l_y);
+   }else{
+    target_joint_angles[i]=(2*M_PI/l_p)*alpha_p*sin(2*M_PI*((i*phi)/l_p+ t/T));
+   }
+ }
 
 }
 
