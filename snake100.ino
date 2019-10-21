@@ -20,6 +20,8 @@
 
 #define TIMER1_PERIOD ((uint32)10000) // microsec
 
+#define IS_YAW(i) (!(i%2)==odd_joint_is_yaw)
+
 RC100 Controller;
 Dynamixel Dxl(DXL_BUS_SERIAL1);
 
@@ -30,9 +32,8 @@ Dynamixel Dxl(DXL_BUS_SERIAL1);
 
 void timer1_interrupt_handler();
 
-double targety[UNIT_NUM];//+-150[deg]
-double targetp[UNIT_NUM];//+-150[deg]
-
+double target_joint_angles[JOINT_NUM];
+bool odd_joint_is_yaw = false;
 
 int CommandParameters[200]=
 {
@@ -260,8 +261,7 @@ void loop() {
     //initsnake();
     //delay(500);
     for ( int i = 0; i< UNIT_NUM; i++){
-      targety[i] = 0;
-      targetp[i] = 0;
+      // TODO: 関節角度の初期化
     }
 
     if ( mode == snake ) {
@@ -327,8 +327,8 @@ void snakemode() {
   //t = t++;
   t = up;
   for ( int i = 0; i< UNIT_NUM; i++){
-    targetp[i] = 0;
-    targety[i] =  A * sin ( w * t + phi * i );
+    // targetp[i] = 0;
+    // targety[i] =  A * sin ( w * t + phi * i );
   }
 
 }
@@ -342,8 +342,8 @@ void sidemode () {
   //t = t++;
   t = up;
   for ( int i = 0; i< UNIT_NUM; i++){
-    targety[i] = A * sin ( w * t + phi * i );
-    targetp[i] = A * sin ( w * t + phi * i - M_PI/4 );
+    // targety[i] = A * sin ( w * t + phi * i );
+    // targetp[i] = A * sin ( w * t + phi * i - M_PI/4 );
   }
 
 }
@@ -375,8 +375,8 @@ void helixmode() {
   //kap_y = kappa*cos(psi);
 
   for ( int i = 0; i< UNIT_NUM; i++){
-    targety[i] = 2.0*kap*ds*cos( (double)i  * 2.0 * ds * tau + w * (double)t )*360.0/(double)(2.0*M_PI);
-    targetp[i] = -2.0*kap*ds*sin( ((double)i * 2.0 ) * ds * tau + w * (double)t )*360.0/(double)(2.0*M_PI);
+    // targety[i] = 2.0*kap*ds*cos( (double)i  * 2.0 * ds * tau + w * (double)t )*360.0/(double)(2.0*M_PI);
+    // targetp[i] = -2.0*kap*ds*sin( ((double)i * 2.0 ) * ds * tau + w * (double)t )*360.0/(double)(2.0*M_PI);
   }
 
 }
@@ -384,8 +384,8 @@ void helixmode() {
 void othermode() {
 
   for ( int i = 0; i< UNIT_NUM; i++){
-    targety[i] = 0;
-    targetp[i] = 0;
+    // targety[i] = 0;
+    // targetp[i] = 0;
   }
   //Dxl.writeWord( BROADCAST_ID, P_GOAL_SPEED, 512);// 
   //Dxl.writeWord( BROADCAST_ID, P_GOAL_POSITION, 512);// 初期設定　軸の位置　０度
@@ -396,8 +396,8 @@ void othermode() {
 void settargetang () {
   //目標角度設定　0-1023
   for ( int ui = 0 ; ui < UNIT_NUM ; ui++ ) {
-    CommandParameters[2*2*ui + 1] = 512 + targetp[ui]/150.0*511; //ピッチ軸
-    CommandParameters[2*2*ui + 3] = 512 + targety[ui]/150.0*511; //ヨー軸
+    // CommandParameters[2*2*ui + 1] = 512 + targetp[ui]/150.0*511; //ピッチ軸
+    // CommandParameters[2*2*ui + 3] = 512 + targety[ui]/150.0*511; //ヨー軸
   }
 }
 
