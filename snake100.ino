@@ -260,8 +260,8 @@ void loop() {
     //Dxl.writeWord( BROADCAST_ID, P_GOAL_POSITION, 512);// 初期設定　軸の位置　０度
     //initsnake();
     //delay(500);
-    for ( int i = 0; i< UNIT_NUM; i++){
-      // TODO: 関節角度の初期化
+    for ( int i = 0; i< JOINT_NUM; i++){
+      target_joint_angles[i] = 0;
     }
 
     if ( mode == snake ) {
