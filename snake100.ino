@@ -318,9 +318,9 @@ void loop() {
 
 void snakemode() {
 
-  double A = 60; 
-  double w = 0.1;
-  double phi = 1.5;
+  double A = 60;               // 最大の曲率
+  double w = 0.1;              // 動作速度パラメータ
+  double phi = 0.0015 /* m */; // リンク長
 
   t = up;
 
