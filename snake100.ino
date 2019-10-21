@@ -393,6 +393,10 @@ void othermode() {
 }
 
 
+void pedalmode() {
+
+}
+
 void settargetang () {
   //目標角度設定　0-1023
   for ( int ui = 0 ; ui < UNIT_NUM ; ui++ ) {
