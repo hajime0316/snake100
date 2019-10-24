@@ -397,7 +397,7 @@ void othermode() {
 
 void pedalmode() {
  
- double l_p=0.1; //縦波の波長
+ double l_p=0.5; //縦波の波長
  double l_y=0.1; //横波の波長
  double alpha_p=M_PI/6; //縦波における体と推進方向の最大角度
  double alpha_y=M_PI/6; //横波における体と推進方向の最大角度
