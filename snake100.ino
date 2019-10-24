@@ -18,6 +18,12 @@
 #define ledyellow ( ledred|ledgreen )
 #define ledwhite ( ledred|ledgreen|ledblue )
 
+#define TIMER1_PERIOD ((uint32)10000) // microsec
+
+#define IS_YAW(i) ((i%2 == 0) == odd_joint_is_yaw)
+#define GOAL_POSITION_PARAM_ZERO 512
+#define GOAL_POSITION_PARAM_PAR_ONE_RADIAN (512 / ((5.0/6.0)*PI))
+
 RC100 Controller;
 Dynamixel Dxl(DXL_BUS_SERIAL1);
 
@@ -26,9 +32,10 @@ Dynamixel Dxl(DXL_BUS_SERIAL1);
 #define JOINT_NUM (UNIT_NUM * 2)  // 100個サーボモータをつないだとき，
                                   // UNIT_NUM 50, JOINT_NUM 100
 
-double targety[UNIT_NUM];//+-150[deg]
-double targetp[UNIT_NUM];//+-150[deg]
+void timer1_interrupt_handler();
 
+double target_joint_angles[JOINT_NUM] = {0};
+bool odd_joint_is_yaw = false;
 
 int CommandParameters[200]=
 {
@@ -167,16 +174,12 @@ void setup() {
   delay(500);   // このdelayがないと，100以上のIDを持つDxl
                 // が動かない！
 
-  // 一旦接続されている全てのDxlを点灯->全て消灯
-  //Dxl.ledOn(BROADCAST_ID, ledwhite);
-  //delay(500);
-  //Dxl.ledOff(BROADCAST_ID);
-
   for(int i = 0; i < JOINT_NUM; i++) {
     Dxl.jointMode(CommandParameters[2*i]);
-    Dxl.maxTorque(CommandParameters[2*i],1023);
+    Dxl.maxTorque(CommandParameters[2*i],512);
     Dxl.goalSpeed(CommandParameters[2*i], 512);
-    Dxl.goalTorque(CommandParameters[2*i], 1023);
+    Dxl.goalTorque(CommandParameters[2*i], 512);
+    Dxl.alarmShutdown(CommandParameters[2*i], 2);
   }
   //delay(100);
 
@@ -189,33 +192,40 @@ void setup() {
 
   initsnake();
   SerialUSB.print("SYSTEM INIT OK!!!\r\n");
+
+  // タイマ1設定
+  //// channeは1を使う
+  const int channel = 1;
+  //// タイマ停止
+  Timer1.pause();
+  //// 周期設定
+  Timer1.setPeriod(TIMER1_PERIOD);
+  //// コンペアチャンネルの設定
+  Timer1.setCompare(channel, Timer1.getOverflow());
+  //// 割り込み関数設定
+  Timer1.attachInterrupt(channel, timer1_interrupt_handler);
+  //// タイマのリフレッシュ(設定の適応)
+  Timer1.refresh();
+  //// タイマ再開
+  Timer1.resume();
 }
 
 void loop() {
-  // コントローラのデータ取得
-  if(Controller.available()) {
-    RcvData = Controller.readData();
-  }
-
   if ( RcvData & RC100_BTN_1 ) {
     mode = snake;
-    SerialUSB.print("buttonState = RC100_BTN_1\r\n");
     //Dxl.ledOn(BROADCAST_ID, ledblue);
   } 
   else if ( RcvData & RC100_BTN_2 ) {
     mode = side;
-    SerialUSB.print("buttonState = RC100_BTN_2\r\n");
     //Dxl.ledOn(BROADCAST_ID, ledcyan);
   } 
   else if ( RcvData & RC100_BTN_3 ) {
     mode = helix;
-    SerialUSB.print("buttonState = RC100_BTN_3\r\n");
     //Dxl.ledOn(BROADCAST_ID, ledgreen);
   }
   else if ( RcvData & RC100_BTN_4 ) {
     //Dxl.wheelMode(BROADCAST_ID);
     mode = other;
-    SerialUSB.print("buttonState = RC100_BTN_4\r\n");
     //Dxl.ledOn(BROADCAST_ID, ledyellow);
   }
   //delay(100);
@@ -226,19 +236,15 @@ void loop() {
   if (mode == other ) color = ledwhite;
 
   if ( RcvData & RC100_BTN_U ) {
-    SerialUSB.print("buttonState = RC100_BTN_U\r\n");
     up += 1;
   } 
   else if ( RcvData & RC100_BTN_D ) { 
-    SerialUSB.print("buttonState = RC100_BTN_D\r\n");
     up -= 1;
   } 
   else if ( RcvData & RC100_BTN_R ) {
-    SerialUSB.print("buttonState = RC100_BTN_R\r\n");
     right += 1;
   } 
   else if ( RcvData & RC100_BTN_L ) {
-    SerialUSB.print("buttonState = RC100_BTN_L\r\n");
     right -= 1;
   }
 
@@ -247,32 +253,24 @@ void loop() {
     present_mode = mode; 
     up = 0;
     right = 0;
-    SerialUSB.print("\r\n\r\nSnakeMode = ");
-    SerialUSB.println(mode);
-    SerialUSB.print("\r\n\r\n");
     //Dxl.writeWord( BROADCAST_ID, P_GOAL_SPEED, 512);// 
     //Dxl.writeWord( BROADCAST_ID, P_GOAL_POSITION, 512);// 初期設定　軸の位置　０度
     //initsnake();
     //delay(500);
-    for ( int i = 0; i< UNIT_NUM; i++){
-      targety[i] = 0;
-      targetp[i] = 0;
+    for ( int i = 0; i< JOINT_NUM; i++){
+      target_joint_angles[i] = 0;
     }
 
     if ( mode == snake ) {
-      //SerialUSB.print("\r\nSnakeMode == snake\r\n\r\n");
       snakemode();
     } 
     else if ( mode == side ) {
-      //SerialUSB.print("\r\nSnakeMode == side\r\n\r\n");
       sidemode();
     } 
     else if ( mode == helix ) {
-      //SerialUSB.print("\r\nSnakeMode == helix\r\n\r\n");
-      helixmode();
+      pedalmode();
     }
     else if ( mode == other ) {
-      //SerialUSB.print("\r\nSnakeMode == other\r\n\r\n");
       othermode();
     }
 
@@ -294,7 +292,7 @@ void loop() {
       sidemode();
     } 
     else if ( mode == helix ) {
-      helixmode();
+      pedalmode();
     }
     else if ( mode == other ) {
       othermode();
@@ -320,16 +318,21 @@ void loop() {
 
 void snakemode() {
 
-  double A = 60; 
-  double w = 0.1;
-  double phi = 1.5;
-  //t = t++;
-  t = up;
-  for ( int i = 0; i< UNIT_NUM; i++){
-    targetp[i] = 0;
-    targety[i] =  A * sin ( w * t + phi * i );
-  }
+  double A = 1.0 /3.0 * PI;      // 最大の曲率
+  double w = 0.1;                // 動作速度パラメータ
+  double phi = 0.0015 /* [m] */; // リンク長
+  double L = 0.015 /* [m] */;    // 1周期分の長さ
 
+  t = up;
+
+  for ( int i = 0; i< JOINT_NUM; i++){
+    if(IS_YAW(i)) {
+      target_joint_angles[i] = A * sin(w*t + phi*i * (2*PI / L));
+    }
+    else {
+      target_joint_angles[i] = 0;
+    }
+  }
 }
 
 
@@ -341,8 +344,8 @@ void sidemode () {
   //t = t++;
   t = up;
   for ( int i = 0; i< UNIT_NUM; i++){
-    targety[i] = A * sin ( w * t + phi * i );
-    targetp[i] = A * sin ( w * t + phi * i - M_PI/4 );
+    // targety[i] = A * sin ( w * t + phi * i );
+    // targetp[i] = A * sin ( w * t + phi * i - M_PI/4 );
   }
 
 }
@@ -374,8 +377,8 @@ void helixmode() {
   //kap_y = kappa*cos(psi);
 
   for ( int i = 0; i< UNIT_NUM; i++){
-    targety[i] = 2.0*kap*ds*cos( (double)i  * 2.0 * ds * tau + w * (double)t )*360.0/(double)(2.0*M_PI);
-    targetp[i] = -2.0*kap*ds*sin( ((double)i * 2.0 ) * ds * tau + w * (double)t )*360.0/(double)(2.0*M_PI);
+    // targety[i] = 2.0*kap*ds*cos( (double)i  * 2.0 * ds * tau + w * (double)t )*360.0/(double)(2.0*M_PI);
+    // targetp[i] = -2.0*kap*ds*sin( ((double)i * 2.0 ) * ds * tau + w * (double)t )*360.0/(double)(2.0*M_PI);
   }
 
 }
@@ -383,8 +386,8 @@ void helixmode() {
 void othermode() {
 
   for ( int i = 0; i< UNIT_NUM; i++){
-    targety[i] = 0;
-    targetp[i] = 0;
+    // targety[i] = 0;
+    // targetp[i] = 0;
   }
   //Dxl.writeWord( BROADCAST_ID, P_GOAL_SPEED, 512);// 
   //Dxl.writeWord( BROADCAST_ID, P_GOAL_POSITION, 512);// 初期設定　軸の位置　０度
@@ -392,11 +395,36 @@ void othermode() {
 }
 
 
+void pedalmode() {
+ 
+ double l_p=0.5; //縦波の波長
+ double l_y=0.1; //横波の波長
+ double alpha_p=M_PI/6; //縦波における体と推進方向の最大角度
+ double alpha_y=M_PI/6; //横波における体と推進方向の最大角度
+ double T=10; //ペダルウェーブの周期
+ double v=0.003; //ペダルウェーブの移動速度
+ double phi=0.045; //1リンクごとの長さ
+ 
+ t=up;
+
+// kappa_y=(2*M_PI/l_)*alpha_*sin(2*M_PI*(s-v*t)/l_);
+ //kappa_p = (2*M_PI/l_p_)*alpha_p_*sin(2*M_PI*(s/l_p_ + t/t_p_));
+ for ( int i = 0; i< JOINT_NUM; i++){
+
+   if(IS_YAW(i)){
+    target_joint_angles[i]=alpha_y*sin(2*M_PI*(i*phi-v*1)/l_y);
+   }else{
+    target_joint_angles[i]=alpha_p*sin(2*M_PI*((i*phi)/l_p+ t/T));
+   }
+ }
+
+}
+
 void settargetang () {
   //目標角度設定　0-1023
-  for ( int ui = 0 ; ui < UNIT_NUM ; ui++ ) {
-    CommandParameters[2*2*ui + 1] = 512 + targetp[ui]/150.0*511; //ピッチ軸
-    CommandParameters[2*2*ui + 3] = 512 + targety[ui]/150.0*511; //ヨー軸
+  for (int i = 0; i < JOINT_NUM; i++) {
+    CommandParameters[2 * i + 1] =
+      GOAL_POSITION_PARAM_ZERO - target_joint_angles[i] * GOAL_POSITION_PARAM_PAR_ONE_RADIAN; //ピッチ軸
   }
 }
 
@@ -412,5 +440,12 @@ void initsnake() {
     Dxl.goalPosition(CommandParameters[2*ui], 512);
     Dxl.ledOn(CommandParameters[2*ui], color);
     delay(30);
+  }
+}
+
+void timer1_interrupt_handler() {
+  // コントローラのデータ取得
+  if(Controller.available()) {
+    RcvData = Controller.readData();
   }
 }
