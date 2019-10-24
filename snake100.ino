@@ -34,7 +34,7 @@ Dynamixel Dxl(DXL_BUS_SERIAL1);
 
 void timer1_interrupt_handler();
 
-double target_joint_angles[JOINT_NUM];
+double target_joint_angles[JOINT_NUM] = {0};
 bool odd_joint_is_yaw = false;
 
 int CommandParameters[200]=
