@@ -423,7 +423,7 @@ void pedalmode() {
 void settargetang () {
   //目標角度設定　0-1023
   for (int i = 0; i < JOINT_NUM; i++) {
-    CommandParameters[2 * JOINT_NUM + 1] =
+    CommandParameters[2 * i + 1] =
       GOAL_POSITION_PARAM_ZERO - target_joint_angles[i] * GOAL_POSITION_PARAM_PAR_ONE_RADIAN; //ピッチ軸
   }
 }
