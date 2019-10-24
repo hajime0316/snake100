@@ -34,7 +34,7 @@ Dynamixel Dxl(DXL_BUS_SERIAL1);
 
 void timer1_interrupt_handler();
 
-double target_joint_angles[JOINT_NUM];
+double target_joint_angles[JOINT_NUM] = {0};
 bool odd_joint_is_yaw = false;
 
 int CommandParameters[200]=
@@ -318,16 +318,21 @@ void loop() {
 
 void snakemode() {
 
-  double A = 60; 
-  double w = 0.1;
-  double phi = 1.5;
-  //t = t++;
-  t = up;
-  for ( int i = 0; i< UNIT_NUM; i++){
-    // targetp[i] = 0;
-    // targety[i] =  A * sin ( w * t + phi * i );
-  }
+  double A = 60;                 // 最大の曲率
+  double w = 0.1;                // 動作速度パラメータ
+  double phi = 0.0015 /* [m] */; // リンク長
+  double L = 0.015 /* [m] */;    // 1周期分の長さ
 
+  t = up;
+
+  for ( int i = 0; i< JOINT_NUM; i++){
+    if(IS_YAW(i)) {
+      target_joint_angles[i] = A * sin(w*t + phi*i * (2*PI / L));
+    }
+    else {
+      target_joint_angles[i] = 0;
+    }
+  }
 }
 
 
@@ -418,7 +423,7 @@ void pedalmode() {
 void settargetang () {
   //目標角度設定　0-1023
   for (int i = 0; i < JOINT_NUM; i++) {
-    CommandParameters[2 * JOINT_NUM + 1] =
+    CommandParameters[2 * i + 1] =
       GOAL_POSITION_PARAM_ZERO - target_joint_angles[i] * GOAL_POSITION_PARAM_PAR_ONE_RADIAN; //ピッチ軸
   }
 }
