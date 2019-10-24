@@ -20,7 +20,7 @@
 
 #define TIMER1_PERIOD ((uint32)10000) // microsec
 
-#define IS_YAW(i) (!(i%2)==odd_joint_is_yaw)
+#define IS_YAW(i) ((i%2 == 0) == odd_joint_is_yaw)
 #define GOAL_POSITION_PARAM_ZERO 512
 #define GOAL_POSITION_PARAM_PAR_ONE_RADIAN (512 / ((5.0/6.0)*PI))
 
@@ -268,7 +268,7 @@ void loop() {
       sidemode();
     } 
     else if ( mode == helix ) {
-      helixmode();
+      pedalmode();
     }
     else if ( mode == other ) {
       othermode();
@@ -292,7 +292,7 @@ void loop() {
       sidemode();
     } 
     else if ( mode == helix ) {
-      helixmode();
+      pedalmode();
     }
     else if ( mode == other ) {
       othermode();
@@ -318,7 +318,7 @@ void loop() {
 
 void snakemode() {
 
-  double A = 60;                 // 最大の曲率
+  double A = 1.0 /3.0 * PI;      // 最大の曲率
   double w = 0.1;                // 動作速度パラメータ
   double phi = 0.0015 /* [m] */; // リンク長
   double L = 0.015 /* [m] */;    // 1周期分の長さ
@@ -397,13 +397,13 @@ void othermode() {
 
 void pedalmode() {
  
- double l_p=0.1; //縦波の波長
+ double l_p=0.5; //縦波の波長
  double l_y=0.1; //横波の波長
  double alpha_p=M_PI/6; //縦波における体と推進方向の最大角度
  double alpha_y=M_PI/6; //横波における体と推進方向の最大角度
- double T=1.0; //ペダルウェーブの周期
- double v=0.3; //ペダルウェーブの移動速度
- double phi=1.5; //1リンクごとの長さ
+ double T=10; //ペダルウェーブの周期
+ double v=0.003; //ペダルウェーブの移動速度
+ double phi=0.045; //1リンクごとの長さ
  
  t=up;
 
@@ -412,9 +412,9 @@ void pedalmode() {
  for ( int i = 0; i< JOINT_NUM; i++){
 
    if(IS_YAW(i)){
-    target_joint_angles[i]=(2*M_PI/l_y)*alpha_y*sin(2*M_PI*(i*phi-v*t)/l_y);
+    target_joint_angles[i]=alpha_y*sin(2*M_PI*(i*phi-v*1)/l_y);
    }else{
-    target_joint_angles[i]=(2*M_PI/l_p)*alpha_p*sin(2*M_PI*((i*phi)/l_p+ t/T));
+    target_joint_angles[i]=alpha_p*sin(2*M_PI*((i*phi)/l_p+ t/T));
    }
  }
 
