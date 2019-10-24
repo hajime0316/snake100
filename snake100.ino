@@ -403,7 +403,7 @@ void pedalmode() {
  double alpha_y=M_PI/6; //横波における体と推進方向の最大角度
  double T=1.0; //ペダルウェーブの周期
  double v=0.3; //ペダルウェーブの移動速度
- double phi=1.5; //1リンクごとの長さ
+ double phi=0.045; //1リンクごとの長さ
  
  t=up;
 
