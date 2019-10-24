@@ -20,7 +20,7 @@
 
 #define TIMER1_PERIOD ((uint32)10000) // microsec
 
-#define IS_YAW(i) (!(i%2)==odd_joint_is_yaw)
+#define IS_YAW(i) ((i%2 == 0) == odd_joint_is_yaw)
 #define GOAL_POSITION_PARAM_ZERO 512
 #define GOAL_POSITION_PARAM_PAR_ONE_RADIAN (512 / ((5.0/6.0)*PI))
 
@@ -318,7 +318,7 @@ void loop() {
 
 void snakemode() {
 
-  double A = 60;                 // 最大の曲率
+  double A = 1.0 /3.0 * PI;      // 最大の曲率
   double w = 0.1;                // 動作速度パラメータ
   double phi = 0.0015 /* [m] */; // リンク長
   double L = 0.015 /* [m] */;    // 1周期分の長さ
