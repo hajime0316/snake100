@@ -268,7 +268,7 @@ void loop() {
       sidemode();
     } 
     else if ( mode == helix ) {
-      helixmode();
+      pedalmode();
     }
     else if ( mode == other ) {
       othermode();
@@ -292,7 +292,7 @@ void loop() {
       sidemode();
     } 
     else if ( mode == helix ) {
-      helixmode();
+      pedalmode();
     }
     else if ( mode == other ) {
       othermode();
