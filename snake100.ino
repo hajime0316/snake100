@@ -390,6 +390,31 @@ void othermode() {
 }
 
 
+void pedalmode() {
+ 
+ double l_p=0.1; //縦波の波長
+ double l_y=0.1; //横波の波長
+ double alpha_p=M_PI/6; //縦波における体と推進方向の最大角度
+ double alpha_y=M_PI/6; //横波における体と推進方向の最大角度
+ double T=1.0; //ペダルウェーブの周期
+ double v=0.3; //ペダルウェーブの移動速度
+ double phi=1.5; //1リンクごとの長さ
+ 
+ t=up;
+
+// kappa_y=(2*M_PI/l_)*alpha_*sin(2*M_PI*(s-v*t)/l_);
+ //kappa_p = (2*M_PI/l_p_)*alpha_p_*sin(2*M_PI*(s/l_p_ + t/t_p_));
+ for ( int i = 0; i< JOINT_NUM; i++){
+
+   if(IS_YAW(i)){
+    target_joint_angles[i]=(2*M_PI/l_y)*alpha_y*sin(2*M_PI*(i*phi-v*t)/l_y);
+   }else{
+    target_joint_angles[i]=(2*M_PI/l_p)*alpha_p*sin(2*M_PI*((i*phi)/l_p+ t/T));
+   }
+ }
+
+}
+
 void settargetang () {
   //目標角度設定　0-1023
   for (int i = 0; i < JOINT_NUM; i++) {
