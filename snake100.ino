@@ -409,7 +409,7 @@ void pedalmode() {
  //kappa_p = (2*M_PI/l_p_)*alpha_p_*sin(2*M_PI*(s/l_p_ + t/t_p_));
  for ( int i = 0; i< JOINT_NUM; i++){
 
-   if(IS_YAW){
+   if(IS_YAW(i)){
     target_joint_angles[i]=(2*M_PI/l_y)*alpha_y*sin(2*M_PI*(i*phi-v*t)/l_y);
    }else{
     target_joint_angles[i]=(2*M_PI/l_p)*alpha_p*sin(2*M_PI*((i*phi)/l_p+ t/T));
