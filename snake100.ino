@@ -401,8 +401,8 @@ void pedalmode() {
  double l_y=0.1; //横波の波長
  double alpha_p=M_PI/6; //縦波における体と推進方向の最大角度
  double alpha_y=M_PI/6; //横波における体と推進方向の最大角度
- double T=1.0; //ペダルウェーブの周期
- double v=0.3; //ペダルウェーブの移動速度
+ double T=10; //ペダルウェーブの周期
+ double v=0.003; //ペダルウェーブの移動速度
  double phi=0.045; //1リンクごとの長さ
  
  t=up;
@@ -412,9 +412,9 @@ void pedalmode() {
  for ( int i = 0; i< JOINT_NUM; i++){
 
    if(IS_YAW(i)){
-    target_joint_angles[i]=(2*M_PI/l_y)*alpha_y*sin(2*M_PI*(i*phi-v*t)/l_y);
+    target_joint_angles[i]=alpha_y*sin(2*M_PI*(i*phi-v*1)/l_y);
    }else{
-    target_joint_angles[i]=(2*M_PI/l_p)*alpha_p*sin(2*M_PI*((i*phi)/l_p+ t/T));
+    target_joint_angles[i]=alpha_p*sin(2*M_PI*((i*phi)/l_p+ t/T));
    }
  }
 
