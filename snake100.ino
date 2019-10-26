@@ -171,7 +171,7 @@ void setup() {
 
   Dxl.begin(3);
 
-  delay(3000)
+  delay(3000);
   // ここのdelayは大事!
   // 100以上のIDを持つDynamixelと通信できない問題に対して，ここにdelay(500)を追加
   // [2019年10月26日]
