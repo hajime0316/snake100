@@ -171,8 +171,12 @@ void setup() {
 
   Dxl.begin(3);
 
-  delay(500);   // このdelayがないと，100以上のIDを持つDxl
-                // が動かない！
+  delay(3000)
+  // ここのdelayは大事!
+  // 100以上のIDを持つDynamixelと通信できない問題に対して，ここにdelay(500)を追加
+  // [2019年10月26日]
+  // 60リンク以上つないだ時にDynamixelとまったく通信できなくなる問題に対して，
+  // delay(500)をdelay(3000)に変更し，ヘビの先頭に1000uFの電解コンデンサを追加
 
   for(int i = 0; i < JOINT_NUM; i++) {
     Dxl.jointMode(CommandParameters[2*i]);
