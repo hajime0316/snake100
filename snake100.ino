@@ -171,7 +171,7 @@ void setup() {
 
   Dxl.begin(3);
 
-  delay(500);   // このdelayがないと，100以上のIDを持つDxl
+  delay(3000);  // このdelayがないと，100以上のIDを持つDxl
                 // が動かない！
 
   for(int i = 0; i < JOINT_NUM; i++) {
